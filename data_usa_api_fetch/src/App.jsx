@@ -1,9 +1,13 @@
+// fetch data from here : https://dummy.restapiexample.com/
+
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import "./App.css";
+import Card from "./components/Card";
 
 function App() {
 	const [data, setData] = useState([]);
+	const [empData, setEmpData] = useState([]);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -22,10 +26,24 @@ function App() {
 		fetchData();
 	}, []);
 
+	useEffect(() => {
+		const fetchEmpData = async () => {
+			const empResponse = await fetch(
+				"https://dummy.restapiexample.com/api/v1/employees"
+			);
+			const fetchedData = await empResponse.json();
+			const innerData = fetchedData.data;
+
+			setEmpData(innerData);
+		};
+
+		fetchEmpData();
+	}, []);
+
 	return (
 		<>
 			<div>
-				<h3>US Population</h3>
+				<h1>US Population</h1>
 				{data.map((item) => (
 					<div key={item.Year}>
 						<h4>
@@ -35,61 +53,14 @@ function App() {
 					</div>
 				))}
 			</div>
+			<div>
+				<h1>Employee Data</h1>
+				{empData.map((item) => (
+					<Card key={item.id} employeeData={item} />
+				))}
+			</div>
 		</>
 	);
 }
 
 export default App;
-
-//! We can do it in this way also
-
-/* eslint-disable no-unused-vars */
-// import { useEffect, useState } from "react";
-// import "./App.css";
-
-// function App() {
-// 	const [data, setData] = useState({
-// 		Nation: "",
-// 		Year: "",
-// 		Population: 0,
-// 	});
-
-// 	useEffect(() => {
-// 		const fetchData = async () => {
-// 			try {
-// 				const response = await fetch(
-// 					"https://datausa.io/api/data?drilldowns=Nation&measures=Population"
-// 				);
-// 				if (!response.ok) {
-// 					throw new Error("Network response was not ok");
-// 				}
-
-// 				const jsonData = await response.json();
-// 				const firstItem = jsonData.data[1]; // Assuming you want the first item
-
-// 				setData({
-// 					Nation: firstItem.Nation,
-// 					Year: firstItem.Year,
-// 					Population: firstItem.Population,
-// 				});
-// 			} catch (error) {
-// 				console.error("Error fetching data:", error);
-// 			}
-// 		};
-
-// 		fetchData();
-// 	}, []);
-
-// 	return (
-// 		<>
-// 			<div>
-// 				<h3>{data.Nation}</h3>
-// 				<h4>
-// 					{data.Year} & {data.Population}
-// 				</h4>
-// 			</div>
-// 		</>
-// 	);
-// }
-
-// export default App;
